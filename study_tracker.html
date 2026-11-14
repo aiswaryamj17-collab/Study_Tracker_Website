@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyGrove — Learning Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --g50: #f0faf2;
+    --g100: #d4f0db;
+    --g200: #a8e0b5;
+    --g300: #72c985;
+    --g400: #43b05a;
+    --g500: #2d9148;
+    --g600: #1f7235;
+    --g700: #145526;
+    --g800: #0b3819;
+    --g900: #051f0e;
+    --gold: #c9a84c;
+    --gold-light: #f0e2b8;
+    --bg: #f5fbf6;
+    --surface: #ffffff;
+    --surface2: #eef7f0;
+    --border: rgba(31,114,53,0.15);
+    --border-mid: rgba(31,114,53,0.3);
+    --text: #0b3819;
+    --text-mid: #1f7235;
+    --text-muted: #52876a;
+    --shadow: 0 4px 24px rgba(20,85,38,0.10);
+    --shadow-sm: 0 2px 8px rgba(20,85,38,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(67,176,90,0.07) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(45,145,72,0.06) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2343b05a' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* HEADER */
+  header {
+    background: var(--g700);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(5,31,14,0.3);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--g100);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-leaf {
+    width: 32px; height: 32px;
+    background: var(--g400);
+    border-radius: 50% 0 50% 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .hstat {
+    text-align: center;
+  }
+
+  .hstat-num {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--g200);
+    display: block;
+  }
+
+  .hstat-label {
+    font-size: 0.7rem;
+    color: var(--g400);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* MAIN LAYOUT */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* TIMER CARD */
+  .timer-card {
+    background: var(--g700);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .timer-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 100px; height: 100px;
+    background: rgba(67,176,90,0.15);
+    border-radius: 50%;
+  }
+
+  .timer-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--g300);
+    margin-bottom: 0.5rem;
+  }
+
+  .timer-subject-name {
+    font-size: 0.9rem;
+    color: var(--g200);
+    margin-bottom: 1rem;
+    min-height: 1.2em;
+    font-style: italic;
+  }
+
+  .timer-display {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--g100);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .timer-ring {
+    width: 120px; height: 120px;
+    margin: 0 auto 1.2rem;
+    position: relative;
+  }
+
+  .timer-ring svg { transform: rotate(-90deg); }
+
+  .timer-ring-display {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--g100);
+  }
+
+  .timer-preset {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .preset-btn {
+    background: rgba(67,176,90,0.15);
+    border: 1px solid rgba(67,176,90,0.3);
+    color: var(--g200);
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .preset-btn:hover, .preset-btn.active {
+    background: var(--g500);
+    border-color: var(--g400);
+    color: white;
+  }
+
+  .timer-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .timer-btn {
+    padding: 8px 22px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+
+  .timer-btn-start {
+    background: var(--g300);
+    color: var(--g900);
+  }
+
+  .timer-btn-start:hover { background: var(--g200); }
+
+  .timer-btn-reset {
+    background: rgba(255,255,255,0.08);
+    color: var(--g300);
+    border: 1px solid rgba(67,176,90,0.25);
+  }
+
+  .timer-btn-reset:hover { background: rgba(255,255,255,0.12); }
+
+  .timer-custom {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .timer-custom input {
+    width: 60px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(67,176,90,0.25);
+    border-radius: 8px;
+    color: var(--g100);
+    font-size: 0.85rem;
+    padding: 5px 8px;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .timer-custom label {
+    font-size: 0.75rem;
+    color: var(--g400);
+  }
+
+  /* STATS CARD */
+  .stats-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--g700);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title-icon {
+    width: 24px; height: 24px;
+    background: var(--g100);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-box {
+    background: var(--surface2);
+    border-radius: 12px;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--g600);
+    display: block;
+  }
+
+  .stat-lbl {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ADD SUBJECT */
+  .add-subject-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+  }
+
+  .input-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .sg-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .sg-input:focus { border-color: var(--g400); }
+
+  .sg-input::placeholder { color: var(--text-muted); opacity: 0.7; }
+
+  .sg-btn {
+    background: var(--g600);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 9px 16px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .sg-btn:hover { background: var(--g500); }
+
+  /* MAIN CONTENT */
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--g800);
+  }
+
+  /* SUBJECT CARD */
+  .subject-card {
+    background: var(--surface);
+    border-radius: 18px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .subject-card:hover { box-shadow: var(--shadow); }
+
+  .subject-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1.1rem 1.25rem;
+    cursor: pointer;
+    background: var(--surface);
+    transition: background 0.2s;
+    border-bottom: 1px solid transparent;
+  }
+
+  .subject-header:hover { background: var(--surface2); }
+
+  .subject-header.open {
+    border-bottom-color: var(--border);
+  }
+
+  .subject-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .subject-name {
+    flex: 1;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text);
+  }
+
+  .subject-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .progress-bar-wrap {
+    width: 80px;
+    height: 6px;
+    background: var(--g100);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: var(--g400);
+    transition: width 0.4s ease;
+  }
+
+  .progress-pct {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    min-width: 32px;
+    text-align: right;
+  }
+
+  .subject-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .icon-btn {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+
+  .icon-btn-timer {
+    background: var(--g100);
+    color: var(--g600);
+  }
+
+  .icon-btn-timer:hover { background: var(--g200); }
+
+  .icon-btn-delete {
+    background: #fff0f0;
+    color: #c0392b;
+  }
+
+  .icon-btn-delete:hover { background: #ffe0e0; }
+
+  .chevron {
+    width: 18px; height: 18px;
+    color: var(--text-muted);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+
+  .chevron.open { transform: rotate(180deg); }
+
+  /* CHAPTERS */
+  .chapters-body {
+    padding: 1rem 1.25rem;
+    display: none;
+  }
+
+  .chapters-body.open { display: block; }
+
+  .add-chapter-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .chapter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .chapter-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .chapter-item:hover { border-color: var(--border-mid); }
+
+  .chapter-item.done {
+    background: var(--g50);
+    border-color: rgba(67,176,90,0.2);
+  }
+
+  .sg-checkbox {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    border: 2px solid var(--border-mid);
+    appearance: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s;
+    background: white;
+  }
+
+  .sg-checkbox:checked {
+    background: var(--g500);
+    border-color: var(--g500);
+  }
+
+  .sg-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    top: 0; left: 1px;
+  }
+
+  .chapter-label {
+    flex: 1;
+    font-size: 0.88rem;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .chapter-item.done .chapter-label {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .chapter-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+    flex: 1;
+  }
+
+  .chapter-del {
+    opacity: 0;
+    width: 22px; height: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #c0392b;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: opacity 0.2s;
+  }
+
+  .chapter-item:hover .chapter-del { opacity: 1; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--surface);
+    border-radius: 18px;
+    border: 2px dashed var(--border);
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .empty-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--g600);
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-sub {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  /* COLORS */
+  .color-picker {
+    display: flex;
+    gap: 6px;
+    margin-top: 0.75rem;
+  }
+
+  .color-opt {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .color-opt.selected, .color-opt:hover {
+    border-color: var(--g800);
+    transform: scale(1.15);
+  }
+
+  /* PROGRESS OVERVIEW */
+  .overview-bar {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+  }
+
+  .overall-progress {
+    height: 12px;
+    background: var(--g100);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  .overall-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--g500), var(--g300));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+  }
+
+  .overview-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--g700);
+    color: var(--g100);
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(5,31,14,0.3);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* TIMER ACTIVE */
+  .timer-active-label {
+    font-size: 0.72rem;
+    color: var(--g300);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-leaf">🌿</div>
+    StudyGrove
+  </div>
+  <div class="header-stats">
+    <div class="hstat">
+      <span class="hstat-num" id="h-subjects">0</span>
+      <span class="hstat-label">Subjects</span>
+    </div>
+    <div class="hstat">
+      <span class="hstat-num" id="h-chapters">0</span>
+      <span class="hstat-label">Chapters</span>
+    </div>
+    <div class="hstat">
+      <span class="hstat-num" id="h-done">0</span>
+      <span class="hstat-label">Completed</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- TIMER -->
+    <div class="timer-card">
+      <div class="timer-label">Focus Timer</div>
+      <div class="timer-subject-name" id="timer-subject-label">No subject selected</div>
+
+      <div class="timer-ring">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(67,176,90,0.15)" stroke-width="8"/>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#43b05a" stroke-width="8"
+            stroke-dasharray="326.7" id="timer-ring-progress"
+            stroke-dashoffset="0" stroke-linecap="round"/>
+        </svg>
+        <div class="timer-ring-display" id="timer-display">25:00</div>
+      </div>
+
+      <div class="timer-preset">
+        <button class="preset-btn active" onclick="setPreset(25, this)">25 min</button>
+        <button class="preset-btn" onclick="setPreset(45, this)">45 min</button>
+        <button class="preset-btn" onclick="setPreset(60, this)">1 hr</button>
+      </div>
+
+      <div class="timer-custom">
+        <label>Custom:</label>
+        <input type="number" id="custom-min" placeholder="min" min="1" max="180" />
+        <button class="preset-btn" onclick="setCustom()">Set</button>
+      </div>
+
+      <div class="timer-controls" style="margin-top:1rem;">
+        <button class="timer-btn timer-btn-start" id="timer-start-btn" onclick="toggleTimer()">▶ Start</button>
+        <button class="timer-btn timer-btn-reset" onclick="resetTimer()">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-card">
+      <div class="card-title">
+        <div class="card-title-icon">📊</div>
+        Your Progress
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-num" id="stat-subjects">0</span>
+          <span class="stat-lbl">Subjects</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="stat-chapters">0</span>
+          <span class="stat-lbl">Total Chapters</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="stat-done">0</span>
+          <span class="stat-lbl">Completed</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="stat-pct">0%</span>
+          <span class="stat-lbl">Overall</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD SUBJECT -->
+    <div class="add-subject-card">
+      <div class="card-title">
+        <div class="card-title-icon">📚</div>
+        Add Subject
+      </div>
+      <div class="input-row">
+        <input class="sg-input" id="new-subject-input" placeholder="e.g. Mathematics, Physics…" />
+        <button class="sg-btn" onclick="addSubject()">+ Add</button>
+      </div>
+      <div class="color-picker" id="color-picker"></div>
+    </div>
+
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <div class="section-header">
+      <div class="section-title">My Subjects</div>
+    </div>
+
+    <div class="overview-bar" id="overview-bar" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-size:0.85rem; font-weight:500; color:var(--g700);">Overall Learning Progress</div>
+        <div style="font-size:0.85rem; font-weight:600; color:var(--g500);" id="overview-pct-text">0%</div>
+      </div>
+      <div class="overall-progress">
+        <div class="overall-fill" id="overall-fill" style="width:0%"></div>
+      </div>
+      <div class="overview-meta">
+        <span id="overview-done-count">0 chapters completed</span>
+        <span id="overview-remain-count">0 remaining</span>
+      </div>
+    </div>
+
+    <div id="subjects-container">
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">🌱</div>
+        <div class="empty-title">Your garden is empty!</div>
+        <div class="empty-sub">Add a subject to start tracking your learning journey.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const COLORS = ['#43b05a','#1d9e75','#2563eb','#9333ea','#e85d04','#be123c','#b45309','#0e7490'];
+const COLOR_NAMES = ['Forest','Teal','Blue','Purple','Flame','Rose','Amber','Cyan'];
+
+let subjects = [];
+let selectedColor = COLORS[0];
+let timerInterval = null;
+let timerTotal = 25 * 60;
+let timerRemaining = 25 * 60;
+let timerRunning = false;
+let timerSubjectName = '';
+
+function save() {
+  try { localStorage.setItem('studygrove', JSON.stringify(subjects)); } catch(e){}
+}
+
+function load() {
+  try {
+    const d = localStorage.getItem('studygrove');
+    if (d) subjects = JSON.parse(d);
+  } catch(e){ subjects = []; }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Color picker
+function renderColorPicker() {
+  const cp = document.getElementById('color-picker');
+  cp.innerHTML = '';
+  COLORS.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'color-opt' + (c === selectedColor ? ' selected' : '');
+    div.style.background = c;
+    div.title = COLOR_NAMES[i];
+    div.onclick = () => {
+      selectedColor = c;
+      renderColorPicker();
+    };
+    cp.appendChild(div);
+  });
+}
+
+// SUBJECTS
+function addSubject() {
+  const input = document.getElementById('new-subject-input');
+  const name = input.value.trim();
+  if (!name) return;
+  subjects.push({ id: Date.now(), name, color: selectedColor, chapters: [], open: true });
+  input.value = '';
+  save();
+  render();
+  showToast('📚 Subject added!');
+}
+
+function deleteSubject(id) {
+  subjects = subjects.filter(s => s.id !== id);
+  save();
+  render();
+  showToast('Subject removed');
+}
+
+function toggleSubject(id) {
+  const s = subjects.find(s => s.id === id);
+  if (s) s.open = !s.open;
+  render();
+}
+
+function setTimerSubject(name) {
+  timerSubjectName = name;
+  document.getElementById('timer-subject-label').textContent = 'Studying: ' + name;
+  showToast('⏱ Timer set for ' + name);
+}
+
+// CHAPTERS
+function addChapter(subId) {
+  const input = document.getElementById('chap-input-' + subId);
+  const name = input.value.trim();
+  if (!name) return;
+  const s = subjects.find(s => s.id === subId);
+  if (s) {
+    s.chapters.push({ id: Date.now(), name, done: false });
+    input.value = '';
+    save();
+    render();
+  }
+}
+
+function toggleChapter(subId, chapId) {
+  const s = subjects.find(s => s.id === subId);
+  if (s) {
+    const c = s.chapters.find(c => c.id === chapId);
+    if (c) { c.done = !c.done; save(); render(); }
+  }
+}
+
+function deleteChapter(subId, chapId) {
+  const s = subjects.find(s => s.id === subId);
+  if (s) {
+    s.chapters = s.chapters.filter(c => c.id !== chapId);
+    save();
+    render();
+  }
+}
+
+// STATS
+function computeStats() {
+  const totalChaps = subjects.reduce((a, s) => a + s.chapters.length, 0);
+  const doneChaps = subjects.reduce((a, s) => a + s.chapters.filter(c => c.done).length, 0);
+  const pct = totalChaps > 0 ? Math.round((doneChaps / totalChaps) * 100) : 0;
+  return { subjects: subjects.length, chapters: totalChaps, done: doneChaps, pct };
+}
+
+// RENDER
+function render() {
+  const st = computeStats();
+
+  // Header stats
+  document.getElementById('h-subjects').textContent = st.subjects;
+  document.getElementById('h-chapters').textContent = st.chapters;
+  document.getElementById('h-done').textContent = st.done;
+
+  // Sidebar stats
+  document.getElementById('stat-subjects').textContent = st.subjects;
+  document.getElementById('stat-chapters').textContent = st.chapters;
+  document.getElementById('stat-done').textContent = st.done;
+  document.getElementById('stat-pct').textContent = st.pct + '%';
+
+  // Overview bar
+  const ob = document.getElementById('overview-bar');
+  if (subjects.length > 0) {
+    ob.style.display = 'block';
+    document.getElementById('overall-fill').style.width = st.pct + '%';
+    document.getElementById('overview-pct-text').textContent = st.pct + '%';
+    document.getElementById('overview-done-count').textContent = st.done + ' chapter' + (st.done !== 1 ? 's' : '') + ' completed';
+    document.getElementById('overview-remain-count').textContent = (st.chapters - st.done) + ' remaining';
+  } else {
+    ob.style.display = 'none';
+  }
+
+  const container = document.getElementById('subjects-container');
+  const empty = document.getElementById('empty-state');
+
+  if (subjects.length === 0) {
+    if (!empty) {
+      container.innerHTML = '<div class="empty-state" id="empty-state"><div class="empty-icon">🌱</div><div class="empty-title">Your garden is empty!</div><div class="empty-sub">Add a subject to start tracking your learning journey.</div></div>';
+    } else {
+      container.innerHTML = '';
+      container.appendChild(empty);
+    }
+    return;
+  }
+
+  let html = '';
+  subjects.forEach(s => {
+    const total = s.chapters.length;
+    const done = s.chapters.filter(c => c.done).length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    html += `
+    <div class="subject-card">
+      <div class="subject-header ${s.open ? 'open' : ''}" onclick="toggleSubject(${s.id})">
+        <div class="subject-dot" style="background:${s.color}"></div>
+        <div class="subject-name">${escHtml(s.name)}</div>
+        <div class="subject-progress-wrap">
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" style="width:${pct}%; background:${s.color}"></div>
+          </div>
+          <span class="progress-pct">${pct}%</span>
+        </div>
+        <div class="subject-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn icon-btn-timer" onclick="setTimerSubject('${escHtml(s.name)}')" title="Start timer for this subject">⏱</button>
+          <button class="icon-btn icon-btn-delete" onclick="deleteSubject(${s.id})" title="Delete subject">✕</button>
+        </div>
+        <svg class="chevron ${s.open ? 'open' : ''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="chapters-body ${s.open ? 'open' : ''}">
+        <div class="add-chapter-row">
+          <input class="sg-input" id="chap-input-${s.id}" placeholder="Add a chapter or module…"
+            onkeydown="if(event.key==='Enter') addChapter(${s.id})" />
+          <button class="sg-btn" onclick="addChapter(${s.id})">+ Add</button>
+        </div>
+        <div class="chapter-list">
+          ${s.chapters.length === 0 ? `<div style="font-size:0.83rem; color:var(--text-muted); text-align:center; padding:0.5rem 0; font-style:italic;">No chapters yet — add your first one above!</div>` : ''}
+          ${s.chapters.map(c => `
+            <div class="chapter-item ${c.done ? 'done' : ''}">
+              <input type="checkbox" class="sg-checkbox" ${c.done ? 'checked' : ''}
+                onchange="toggleChapter(${s.id}, ${c.id})" />
+              <label class="chapter-label" onclick="toggleChapter(${s.id}, ${c.id})">${escHtml(c.name)}</label>
+              <button class="chapter-del" onclick="deleteChapter(${s.id}, ${c.id})">✕</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// TIMER
+function setPreset(mins, btn) {
+  resetTimer(false);
+  timerTotal = mins * 60;
+  timerRemaining = timerTotal;
+  updateTimerDisplay();
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+function setCustom() {
+  const val = parseInt(document.getElementById('custom-min').value);
+  if (!val || val < 1 || val > 180) { showToast('Enter 1–180 minutes'); return; }
+  resetTimer(false);
+  timerTotal = val * 60;
+  timerRemaining = timerTotal;
+  updateTimerDisplay();
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+}
+
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timer-start-btn').textContent = '▶ Resume';
+  } else {
+    timerRunning = true;
+    document.getElementById('timer-start-btn').textContent = '⏸ Pause';
+    timerInterval = setInterval(() => {
+      timerRemaining--;
+      updateTimerDisplay();
+      if (timerRemaining <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timer-start-btn').textContent = '▶ Start';
+        showToast('🎉 Time is up! Great work!');
+        timerRemaining = 0;
+        updateTimerDisplay();
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer(resetLabel = true) {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerRemaining = timerTotal;
+  document.getElementById('timer-start-btn').textContent = '▶ Start';
+  if (resetLabel) {
+    timerSubjectName = '';
+    document.getElementById('timer-subject-label').textContent = 'No subject selected';
+  }
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerRemaining / 60);
+  const s = timerRemaining % 60;
+  const txt = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  document.getElementById('timer-display').textContent = txt;
+
+  const frac = timerTotal > 0 ? timerRemaining / timerTotal : 1;
+  const circ = 326.7;
+  const offset = circ * (1 - frac);
+  document.getElementById('timer-ring-progress').style.strokeDashoffset = offset;
+}
+
+// KEYBOARD SHORTCUT
+document.getElementById('new-subject-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addSubject();
+});
+
+// INIT
+load();
+renderColorPicker();
+render();
+updateTimerDisplay();
+</script>
+
+</body>
+</html>
